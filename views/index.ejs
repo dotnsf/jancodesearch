@@ -1,0 +1,37 @@
+<%- include( './header', {} ) %>
+
+<script>
+$(function(){
+  $.ajax({
+    url: '/api/dragstore/categories',
+    type: 'GET',
+    success: function( result ){
+      if( result && result.categories ){
+        for( var categoryname in result.categories ){
+          var tr0 = '<tr><th>' + categoryname + '</th></tr>';
+          $('#table-tbody').append( tr0 );
+
+          var categories = result.categories[categoryname];
+          categories.forEach( function( category ){
+            var tr1 = '<tr><td>'
+              + '<a href="/list/' + category.name + '">' + category.name + '</a>'
+              + '</td></tr>';
+            $('#table-tbody').append( tr1 );
+          });
+        }
+      }
+    },
+    error: function( e0, e1, e2 ){
+    }
+  });
+});
+</script>
+
+<div class="container" style="padding: 50px 0 0 0">
+  <table class="table table-bordered">
+    <tbody id="table-tbody">
+    </tbody>
+  </table>
+</div>
+
+<%- include( './footer', {} ) %>

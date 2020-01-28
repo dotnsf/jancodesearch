@@ -1,0 +1,58 @@
+<%- include( './header', {} ) %>
+
+<!-- name
+<%= name %>
+  -->
+
+<script>
+$(function(){
+  $.ajax({
+    url: '/api/dragstore/items/<%= name %>',
+    type: 'GET',
+    success: function( result ){
+      if( result && result.status && result.items ){
+        result.items.forEach( function( item ){
+          var tr = '<tr>'
+            + '<td>' + item.rank + '</td>'
+            + '<td>' + item.maker + '</td>'
+            + '<td><a href="/item/' + item.code + '">' + item.name + '</a></td>'
+            + '<td>' + item.avg_price + '</td>'
+            + '</tr>';
+          $('#table-tbody').append( tr );
+        });
+        $('#table').DataTable({
+          language: { url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Japanese.json" },
+          lengthChange: true,
+          searching: true,
+          ordering: false,
+          info: false,
+          paging: true
+        });
+      }
+    },
+    error: function( e0, e1, e2 ){
+    }
+  });
+});
+</script>
+
+<div class="container" style="padding: 50px 0 0 0">
+  <div style="text-align: center;">
+  <h2 id="categoryname"><%= name %></h2>
+  </div>
+
+  <table class="table table-bordered" id="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>maker</th>
+        <th>name</th>
+        <th>avg price</th>
+      </tr>
+    </thead>
+    <tbody id="table-tbody">
+    </tbody>
+  </table>
+</div>
+
+<%- include( './footer', {} ) %>

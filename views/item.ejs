@@ -1,0 +1,119 @@
+<%- include( './header', {} ) %>
+
+<!-- code
+<%= code %>
+  -->
+
+<style>
+.rank{
+  width: 52px;
+  height: 40px;
+  text-align: center;
+  vertical-align: center;
+  color: #000000;
+}
+.rank1{
+  background-image: url('/icon_rank_1.png');
+  width: 52px;
+  height: 40px;
+  text-align: center;
+  vertical-align: center;
+  color: #000000;
+}
+.rank2{
+  background-image: url('/icon_rank_2.png');
+  width: 52px;
+  height: 40px;
+  text-align: center;
+  vertical-align: center;
+  color: #000000;
+}
+.rank3{
+  background-image: url('/icon_rank_3.png');
+  width: 52px;
+  height: 40px;
+  text-align: center;
+  vertical-align: center;
+  color: #000000;
+}
+
+.kadomaru{
+  -moz-border-radius: 150px;
+  -webkit-border-radius: 150px;
+  border-radius: 150px;
+  border: 3px #222222 solid;
+  background-color: #fff;
+}
+</style>
+<link href="/colorbox.css" rel="stylesheet"/>
+<script src="/jquery.colorbox-min.js" type="text/javascript"></script>
+<script src="/cvi_busy_lib.js" type="text/javascript"></script>
+<script>
+$(function(){
+  var obj = getBusyOverlay( 'viewport', { color: 'black', opacity: 0.5, text: 'processing..', style: 'text-decoration: blink; font-weight: bold; font-size: 12px; clor: white;' } );
+  $.ajax({
+    url: '/api/code/<%= code %>',
+    type: 'GET',
+    success: function( result ){
+      obj.remove();
+      if( result && result.status && result.result ){
+        result.result.sort( sortByPrice );
+        for( var i = 0; i < result.result.length; i ++ ){
+          var shop = result.result[i];
+          var tr = '<tr>'
+            + '<th class="rank' + ( i < 3 ? ' rank' + ( i + 1 ) : '' ) + '">' + ( i + 1 ) + '</th>'
+            + '<td>' + shop.shop + '</td>'
+            //+ '<td>' + ( shop.imgurl ? '<img src="' + shop.imgurl + '" title="' + shop.name + '" width="100"/>' : '&nbsp;' ) + '</td>'
+            + '<td><a target="_blank" href="' + shop.shopurl + '">' + shop.price + '</a></td>'
+            + '<td align="right"><a class="iframe" rel="external" href="/api/xframe?url=' + shop.cmpurl + '">&gt;&gt;</a></td>'
+            + '</tr>';
+          $('#table-tbody').append( tr );
+
+          if( !$('#itemimg').prop( 'src' ) ){
+            $('#itemname').html( shop.name );  //. ちゃんと正規化された名前を使うべき
+            $('#itemimg').prop( 'src', shop.imgurl );
+          }
+        }
+        $('.iframe').colorbox( { iframe:true, width:"90%", height:"90%" } );
+      }
+    },
+    error: function( e0, e1, e2 ){
+      obj.remove();
+    }
+  });
+});
+
+function sortByPrice( a, b ){
+  var r = 0;
+  if( a['price'] < b['price'] ){
+    r = -1;
+  }else if( a['price'] > b['price'] ){
+    r = 1;
+  }
+
+  return r;
+}
+</script>
+
+<div class="container" style="padding: 50px 0 0 0">
+  <div style="text-align: center;">
+  <img id="itemimg" class="kadomaru"/>
+  <h2 id="itemname"></h2>
+  </div>
+
+  <table border="1" style="width:100%;" id="table">
+    <thead>
+      <tr>
+        <th>rank</th>
+        <th>shop</th>
+        <!-- <th>img</th> -->
+        <th>price</th>
+        <th>&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody id="table-tbody">
+    </tbody>
+  </table>
+</div>
+
+<%- include( './footer', {} ) %>
