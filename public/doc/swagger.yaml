@@ -1,0 +1,76 @@
+swagger: '2.0'
+info:
+  description: JANCODE Search API ドキュメント
+  version: 0.0.1
+  title: JANCODE Search Platform REST APIs
+host: localhost:8080
+basePath: /api
+tags:
+  - name: jancodesearch
+    description: JANCODE Search APIs
+schemes:
+  - http
+  - https
+paths:
+  /dragstore/categories:
+    get:
+      tags:
+        - jancodesearch
+      summary: プラットフォームが対象とする全カテゴリー情報を取得する
+      description: プラットフォームが対象とする全カテゴリー情報（大カテゴリ、小カテゴリ）を取得する
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /dragstore/items/{categoryname}:
+    get:
+      tags:
+        - jancodesearch
+      summary: カテゴリー名から該当商品データを全件取り出す
+      description: カテゴリー名から該当商品データを全件取り出す
+      parameters:
+        - name: categoryname
+          type: string
+          in: params
+          description: カテゴリー名
+          required: true
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /code/{code}:
+    get:
+      tags:
+        - jancodesearch
+      summary: JANコードから該当商品の価格比較データをリアルタイム検索する
+      description: JANコードから該当商品の価格比較データをリアルタイム検索する
+      parameters:
+        - in: params
+          name: code
+          type: string
+          description: JANコード
+          required: true
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /xframe:
+    get:
+      tags:
+        - jancodesearch
+      summary: アップロードするデータが存在しているかを確認する
+      description: アップロードするデータが存在しているかを確認する
+      parameters:
+        - in: query
+          name: url
+          type: string
+          description: 表示したいURL
+          required: true
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
